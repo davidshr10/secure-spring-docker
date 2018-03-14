@@ -1,0 +1,32 @@
+version: '3.5'
+
+services:
+  mysqldb:
+    image: mysql:5.7
+    container_name: mysqldb
+    hostname: mysqldb
+    networks:
+      - spring-webapp
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    env_file:
+      - .env
+  webapp:
+    image: webapp:latest
+    container_name: webapp
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      - mysqldb
+    networks:
+      - spring-webapp
+networks:
+  spring-webapp:
+    driver: bridge
+volumes:
+  dbdata:
